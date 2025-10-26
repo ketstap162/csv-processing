@@ -1,0 +1,21 @@
+FROM public.ecr.aws/docker/library/python:3.12
+
+ENV PYTHONUNBUFFERED 1;
+
+WORKDIR /code
+
+COPY requirements.txt .
+
+RUN pip install --upgrade pip
+
+RUN pip install -r requirements.txt
+
+# Copy development env into the image (keeps example/dev env available inside container)
+COPY deploy/env/.env.dev env/.env.dev
+
+COPY . .
+
+# Make development start script executable
+RUN chmod +x deploy/scripts/start-dev.sh
+
+CMD ["./deploy/scripts/start-dev.sh"]
